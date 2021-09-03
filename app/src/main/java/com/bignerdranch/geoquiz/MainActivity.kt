@@ -12,12 +12,18 @@ import android.widget.Toast
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
+    //Answer buttons
     private lateinit var trueButton: Button
     private lateinit var falseButton: Button
+
+    //Navigation buttons
     private lateinit var nextButton: ImageButton
     private lateinit var prevButton: ImageButton
+
+    //Question display
     private lateinit var questionTextView: TextView
 
+    //Questions and answers
     private val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -27,7 +33,8 @@ class MainActivity : AppCompatActivity() {
         Question(R.string.question_asia, true)
     )
 
-    private var currentIndex = 0
+    private val answeredQuestions: MutableSet<Int> = mutableSetOf()
+    private var currentQuestion = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             nextQuestion()
         }
 
-        toogleNavigationButtons()
+        toggleNavigationButtons()
         updateQuestion()
     }
 
@@ -89,46 +96,64 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy() called")
     }
 
-    private fun nextQuestion() {
-        currentIndex = (currentIndex + 1) % questionBank.size
-        updateQuestion()
-        toogleNavigationButtons()
-    }
-
-    private fun prevQuestion() {
-        currentIndex =
-            (currentIndex + questionBank.size - 1) % questionBank.size
-        updateQuestion()
-        toogleNavigationButtons()
-    }
-
-    private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
-        questionTextView.setText(questionTextResId)
-    }
-
     private fun checkAnswer(userAnswer: Boolean) {
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = questionBank[currentQuestion].answer
 
         val messageResId = if (userAnswer == correctAnswer)
             R.string.correct_toast
         else
             R.string.incorrect_toast
 
+        answeredQuestions.add(currentQuestion)
+        toogleAnswerButtons()
+
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 
-    private fun toogleNavigationButtons() {
-        nextButton.isEnabled = currentIndex != questionBank.size - 1
-        if(nextButton.isEnabled)
-            nextButton.visibility = View.VISIBLE
-        else
-            nextButton.visibility = View.INVISIBLE
+    private fun nextQuestion() {
+        currentQuestion =
+            (currentQuestion + 1) % questionBank.size
+        updateQuestion()
+        toggleNavigationButtons()
+        toogleAnswerButtons()
+    }
 
-        prevButton.isEnabled = currentIndex != 0
-        if(prevButton.isEnabled)
+    private fun prevQuestion() {
+        currentQuestion =
+            (currentQuestion + questionBank.size - 1) % questionBank.size
+        updateQuestion()
+        toggleNavigationButtons()
+        toogleAnswerButtons()
+    }
+
+    private fun updateQuestion() {
+        val questionTextResId = questionBank[currentQuestion].textResId
+        questionTextView.setText(questionTextResId)
+    }
+
+    private fun toggleNavigationButtons() {
+        //If on last question
+        if (currentQuestion != questionBank.size - 1) {
+            nextButton.isEnabled = true
+            nextButton.visibility = View.VISIBLE
+        } else {
+            nextButton.isEnabled = false
+            nextButton.visibility = View.INVISIBLE
+        }
+
+        //If on first question
+        if (currentQuestion != 0) {
             prevButton.visibility = View.VISIBLE
-        else
+            prevButton.isEnabled = true
+        } else {
             prevButton.visibility = View.INVISIBLE
+            prevButton.isEnabled
+        }
+    }
+
+    private fun toogleAnswerButtons() {
+        val isAnswered = !answeredQuestions.contains(currentQuestion)
+        trueButton.isEnabled = isAnswered;
+        falseButton.isEnabled = isAnswered;
     }
 }

@@ -12,6 +12,7 @@
     <!--    Toasts-->
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
+    <string name="score_toast">Final score: </string>
 
     <!--    Questions-->
     <string name="question_australia">Canberra is the capital of Australia.</string>

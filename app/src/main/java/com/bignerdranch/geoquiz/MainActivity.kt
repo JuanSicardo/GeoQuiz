@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private val answeredQuestions: MutableSet<Int> = mutableSetOf()
     private var currentQuestion = 0
+    private var score = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,15 +102,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentQuestion].answer
-        val messageResId = if (userAnswer == correctAnswer)
+        val messageResId = if (userAnswer == correctAnswer) {
+            score++
             R.string.correct_toast
-        else
+        } else
             R.string.incorrect_toast
 
         answeredQuestions.add(currentQuestion)
         toggleAnswerButtons()
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        if (answeredQuestions.size == questionBank.size){
+            //Final score: 4/6
+            val toastMessage = "${getString(R.string.score_toast)}$score/${questionBank.size}"
+
+            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     //direction: true for next question, false for previous question
@@ -117,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         val nextFunction = { (currentQuestion + 1) % questionBank.size }
         val prevFunction = { (currentQuestion + questionBank.size - 1) % questionBank.size }
 
-        currentQuestion = if(direction) nextFunction.invoke() else prevFunction.invoke()
+        currentQuestion = if (direction) nextFunction.invoke() else prevFunction.invoke()
         updateQuestion()
         toggleNavigationButtons()
         toggleAnswerButtons()

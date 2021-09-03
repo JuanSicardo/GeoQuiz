@@ -56,15 +56,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            nextQuestion()
+            //direction: true for next question, false for previous question
+            changeQuestion(true)
         }
 
         prevButton.setOnClickListener {
-            prevQuestion()
+            //direction: true for next question, false for previous question
+            changeQuestion(false)
         }
 
         questionTextView.setOnClickListener {
-            nextQuestion()
+            //direction: true for next question, false for previous question
+            changeQuestion(true)
         }
 
         toggleNavigationButtons()
@@ -98,32 +101,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentQuestion].answer
-
         val messageResId = if (userAnswer == correctAnswer)
             R.string.correct_toast
         else
             R.string.incorrect_toast
 
         answeredQuestions.add(currentQuestion)
-        toogleAnswerButtons()
+        toggleAnswerButtons()
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 
-    private fun nextQuestion() {
-        currentQuestion =
-            (currentQuestion + 1) % questionBank.size
-        updateQuestion()
-        toggleNavigationButtons()
-        toogleAnswerButtons()
-    }
+    //direction: true for next question, false for previous question
+    private fun changeQuestion(direction: Boolean) {
+        val nextFunction = { (currentQuestion + 1) % questionBank.size }
+        val prevFunction = { (currentQuestion + questionBank.size - 1) % questionBank.size }
 
-    private fun prevQuestion() {
-        currentQuestion =
-            (currentQuestion + questionBank.size - 1) % questionBank.size
+        currentQuestion = if(direction) nextFunction.invoke() else prevFunction.invoke()
         updateQuestion()
         toggleNavigationButtons()
-        toogleAnswerButtons()
+        toggleAnswerButtons()
+
     }
 
     private fun updateQuestion() {
@@ -151,9 +149,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun toogleAnswerButtons() {
+    private fun toggleAnswerButtons() {
         val isAnswered = !answeredQuestions.contains(currentQuestion)
-        trueButton.isEnabled = isAnswered;
-        falseButton.isEnabled = isAnswered;
+        trueButton.isEnabled = isAnswered
+        falseButton.isEnabled = isAnswered
     }
 }

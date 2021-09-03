@@ -2,7 +2,6 @@ package com.bignerdranch.geoquiz
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -42,10 +41,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            currentIndex = (currentIndex + 1) % questionBank.size
-            updateQuestion()
+            nextQuestion()
         }
 
+        questionTextView.setOnClickListener {
+            nextQuestion()
+        }
+
+        updateQuestion()
+    }
+
+    private fun nextQuestion() {
+        currentIndex = (currentIndex + 1) % questionBank.size
         updateQuestion()
     }
 

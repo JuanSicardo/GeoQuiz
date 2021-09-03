@@ -3,6 +3,7 @@ package com.bignerdranch.geoquiz
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             nextQuestion()
         }
 
+        toogleNavigationButtons()
         updateQuestion()
     }
 
@@ -90,11 +92,14 @@ class MainActivity : AppCompatActivity() {
     private fun nextQuestion() {
         currentIndex = (currentIndex + 1) % questionBank.size
         updateQuestion()
+        toogleNavigationButtons()
     }
 
     private fun prevQuestion() {
-        currentIndex = (currentIndex + questionBank.size - 1) % questionBank.size
+        currentIndex =
+            (currentIndex + questionBank.size - 1) % questionBank.size
         updateQuestion()
+        toogleNavigationButtons()
     }
 
     private fun updateQuestion() {
@@ -111,5 +116,19 @@ class MainActivity : AppCompatActivity() {
             R.string.incorrect_toast
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun toogleNavigationButtons() {
+        nextButton.isEnabled = currentIndex != questionBank.size - 1
+        if(nextButton.isEnabled)
+            nextButton.visibility = View.VISIBLE
+        else
+            nextButton.visibility = View.INVISIBLE
+
+        prevButton.isEnabled = currentIndex != 0
+        if(prevButton.isEnabled)
+            prevButton.visibility = View.VISIBLE
+        else
+            prevButton.visibility = View.INVISIBLE
     }
 }

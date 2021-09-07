@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 
 private const val TAG = "MainActivity"
 
@@ -23,19 +24,9 @@ class MainActivity : AppCompatActivity() {
     //Question display
     private lateinit var questionTextView: TextView
 
-    //Questions and answers
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-
-    private val answeredQuestions: MutableSet<Int> = mutableSetOf()
-    private var currentQuestion = 0
-    private var score = 0
+    private val quizViewModel: QuizViewModel by lazy {
+        ViewModelProvider(this).get(QuizViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         toggleNavigationButtons()
+        toggleAnswerButtons()
         updateQuestion()
     }
 
@@ -101,21 +93,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
-        val correctAnswer = questionBank[currentQuestion].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = if (userAnswer == correctAnswer) {
-            score++
+            quizViewModel.incrementScore()
             R.string.correct_toast
         } else
             R.string.incorrect_toast
 
-        answeredQuestions.add(currentQuestion)
+        //Mark current question as answered
+        quizViewModel.answerCurrentQuestion()
         toggleAnswerButtons()
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
-        if (answeredQuestions.size == questionBank.size){
+        if (quizViewModel.numberOfAnsweredQuestions == quizViewModel.numberOfQuestions){
             //Final score: 4/6
-            val toastMessage = "${getString(R.string.score_toast)}$score/${questionBank.size}"
+            val toastMessage = "${getString(R.string.score_toast)}${quizViewModel.score}/${quizViewModel.numberOfQuestions}"
 
             Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT)
                 .show()
@@ -124,24 +117,22 @@ class MainActivity : AppCompatActivity() {
 
     //direction: true for next question, false for previous question
     private fun changeQuestion(direction: Boolean) {
-        val nextFunction = { (currentQuestion + 1) % questionBank.size }
-        val prevFunction = { (currentQuestion + questionBank.size - 1) % questionBank.size }
-
-        currentQuestion = if (direction) nextFunction.invoke() else prevFunction.invoke()
+        if (direction) quizViewModel.changeToNextQuestion() else quizViewModel.changeToPreviousQuestion()
         updateQuestion()
         toggleNavigationButtons()
         toggleAnswerButtons()
-
     }
 
+    //Update the UI with the new question properties
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentQuestion].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
     }
 
+    //Enable/disable navigation buttons
     private fun toggleNavigationButtons() {
         //If on last question
-        if (currentQuestion != questionBank.size - 1) {
+        if (quizViewModel.currentQuestionIndex != quizViewModel.numberOfQuestions - 1) {
             nextButton.isEnabled = true
             nextButton.visibility = View.VISIBLE
         } else {
@@ -150,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //If on first question
-        if (currentQuestion != 0) {
+        if (quizViewModel.currentQuestionIndex != 0) {
             prevButton.visibility = View.VISIBLE
             prevButton.isEnabled = true
         } else {
@@ -159,9 +150,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Enable/disable answer buttons
     private fun toggleAnswerButtons() {
-        val isAnswered = !answeredQuestions.contains(currentQuestion)
-        trueButton.isEnabled = isAnswered
-        falseButton.isEnabled = isAnswered
+        trueButton.isEnabled = !quizViewModel.isCurrentQuestionAnswered()
+        falseButton.isEnabled = !quizViewModel.isCurrentQuestionAnswered()
     }
 }

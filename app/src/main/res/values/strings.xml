@@ -8,11 +8,17 @@
     <string name="false_button">False</string>
     <string name="next_button">Next</string>
     <string name="prev_button">Prev</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
+
+    <!--    TextViews-->
+    <string name="warning_text">Are you sure you want to do this?</string>
 
     <!--    Toasts-->
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
     <string name="score_toast">Final score: </string>
+    <string name="judgment_toast">Cheating is wrong</string>
 
     <!--    Questions-->
     <string name="question_australia">Canberra is the capital of Australia.</string>

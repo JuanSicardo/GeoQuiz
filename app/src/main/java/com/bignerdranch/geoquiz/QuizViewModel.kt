@@ -1,9 +1,6 @@
 package com.bignerdranch.geoquiz
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-
-private const val TAG = "QuizViewModel"
 
 class QuizViewModel : ViewModel() {
 
@@ -22,7 +19,9 @@ class QuizViewModel : ViewModel() {
 
     //Current question
     var currentQuestionIndex = 0
-        private set
+        set(value) {
+            if (value in 0 until numberOfQuestions) field = value
+        }
 
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentQuestionIndex].answer
@@ -40,7 +39,9 @@ class QuizViewModel : ViewModel() {
 
     //Scoring
     var score = 0
-        private set
+        set(value) {
+            if (value in 0 until numberOfAnsweredQuestions) field = value
+        }
 
     fun incrementScore() {
         score++
@@ -48,6 +49,9 @@ class QuizViewModel : ViewModel() {
 
     //Answered questions record
     private val answeredQuestions: MutableSet<Int> = mutableSetOf()
+
+    val answeredQuestionsList
+        get() = answeredQuestions.toTypedArray().toCollection(ArrayList())
 
     val numberOfAnsweredQuestions
         get() = answeredQuestions.size
@@ -59,5 +63,10 @@ class QuizViewModel : ViewModel() {
     //Mark current question as answered
     fun answerCurrentQuestion() {
         answeredQuestions.add(currentQuestionIndex)
+    }
+
+    //Mark question with index as answered
+    fun answerQuestion(index: Int) {
+        answeredQuestions.add(index)
     }
 }

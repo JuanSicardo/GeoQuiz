@@ -1,16 +1,17 @@
 package com.bignerdranch.geoquiz
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 
-private const val TAG = "MainActivity"
+private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
+private const val KEY_SCORE = "score"
+private const val KEY_ANSWERED_QUESTIONS = "answered_questions"
 
 class MainActivity : AppCompatActivity() {
     //Answer buttons
@@ -32,6 +33,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Get savedInstanceState
+        quizViewModel.currentQuestionIndex = savedInstanceState?.getInt(KEY_CURRENT_QUESTION_INDEX, 0) ?: 0
+        quizViewModel.score = savedInstanceState?.getInt(KEY_SCORE, 0) ?: 0
+        val listOfAnsweredQuestions = savedInstanceState?.getIntegerArrayList(KEY_ANSWERED_QUESTIONS) ?: ArrayList<Int>()
+        for (index in listOfAnsweredQuestions)
+            quizViewModel.answerQuestion(index)
+
+        //Get UI elements
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
@@ -80,9 +89,10 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
-        if (quizViewModel.numberOfAnsweredQuestions == quizViewModel.numberOfQuestions){
+        if (quizViewModel.numberOfAnsweredQuestions == quizViewModel.numberOfQuestions) {
             //Final score: 4/6
-            val toastMessage = "${getString(R.string.score_toast)}${quizViewModel.score}/${quizViewModel.numberOfQuestions}"
+            val toastMessage =
+                "${getString(R.string.score_toast)}${quizViewModel.score}/${quizViewModel.numberOfQuestions}"
 
             Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT)
                 .show()
@@ -128,5 +138,12 @@ class MainActivity : AppCompatActivity() {
     private fun toggleAnswerButtons() {
         trueButton.isEnabled = !quizViewModel.isCurrentQuestionAnswered()
         falseButton.isEnabled = !quizViewModel.isCurrentQuestionAnswered()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_CURRENT_QUESTION_INDEX, quizViewModel.currentQuestionIndex)
+        outState.putInt(KEY_SCORE, quizViewModel.score)
+        outState.putIntegerArrayList(KEY_ANSWERED_QUESTIONS, quizViewModel.answeredQuestionsList)
     }
 }

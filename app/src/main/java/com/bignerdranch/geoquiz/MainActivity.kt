@@ -1,5 +1,6 @@
 package com.bignerdranch.geoquiz
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     //Navigation buttons
     private lateinit var nextButton: ImageButton
     private lateinit var prevButton: ImageButton
+
+    //Cheat button
+    private lateinit var cheatButton: Button
 
     //Question display
     private lateinit var questionTextView: TextView
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         prevButton = findViewById(R.id.prev_button)
+        cheatButton = findViewById(R.id.cheat_button)
         questionTextView = findViewById(R.id.question_text_view)
 
         trueButton.setOnClickListener {
@@ -63,6 +68,12 @@ class MainActivity : AppCompatActivity() {
         prevButton.setOnClickListener {
             //direction: true for next question, false for previous question
             changeQuestion(false)
+        }
+
+        cheatButton.setOnClickListener {
+            //Start CheatActivity
+            val intent = Intent(this, CheatActivity::class.java)
+            startActivity(intent)
         }
 
         questionTextView.setOnClickListener {

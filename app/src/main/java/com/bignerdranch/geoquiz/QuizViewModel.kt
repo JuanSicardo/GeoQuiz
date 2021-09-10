@@ -69,4 +69,7 @@ class QuizViewModel : ViewModel() {
     fun answerQuestion(index: Int) {
         answeredQuestions.add(index)
     }
+
+    //Cheat detection
+    var isCheater = false
 }

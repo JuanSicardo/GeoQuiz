@@ -1,5 +1,6 @@
 package com.bignerdranch.geoquiz
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
 private const val KEY_SCORE = "score"
 private const val KEY_ANSWERED_QUESTIONS = "answered_questions"
+private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
     //Answer buttons
@@ -40,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         //Get savedInstanceState
         quizViewModel.currentQuestionIndex = savedInstanceState?.getInt(KEY_CURRENT_QUESTION_INDEX, 0) ?: 0
         quizViewModel.score = savedInstanceState?.getInt(KEY_SCORE, 0) ?: 0
-        val listOfAnsweredQuestions = savedInstanceState?.getIntegerArrayList(KEY_ANSWERED_QUESTIONS) ?: ArrayList<Int>()
+        val listOfAnsweredQuestions =
+            savedInstanceState?.getIntegerArrayList(KEY_ANSWERED_QUESTIONS) ?: ArrayList<Int>()
         for (index in listOfAnsweredQuestions)
             quizViewModel.answerQuestion(index)
 
@@ -72,8 +75,9 @@ class MainActivity : AppCompatActivity() {
 
         cheatButton.setOnClickListener {
             //Start CheatActivity
-            val intent = Intent(this, CheatActivity::class.java)
-            startActivity(intent)
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
 
         questionTextView.setOnClickListener {
@@ -86,14 +90,27 @@ class MainActivity : AppCompatActivity() {
         updateQuestion()
     }
 
+    //Get if the user cheated
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK)
+            return
+
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
+    }
+
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageResId = if (userAnswer == correctAnswer) {
-            quizViewModel.incrementScore()
-            R.string.correct_toast
-        } else
-            R.string.incorrect_toast
-
+        val messageResId = when {
+            quizViewModel.isCheater -> R.string.judgment_toast
+            userAnswer == correctAnswer -> {
+                quizViewModel.incrementScore()
+                R.string.correct_toast
+            }
+            else -> R.string.incorrect_toast
+        }
         //Mark current question as answered
         quizViewModel.answerCurrentQuestion()
         toggleAnswerButtons()

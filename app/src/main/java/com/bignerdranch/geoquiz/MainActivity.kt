@@ -1,6 +1,5 @@
 package com.bignerdranch.geoquiz
 
-import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         cheatButton.setOnClickListener { view ->
             //Start CheatActivity
             val options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.width, view.height)
-            cheatActivityContract.launch(quizViewModel.currentQuestionAnswer)
+            cheatActivityContract.launch(quizViewModel.currentQuestionAnswer, options)
         }
 
         questionTextView.setOnClickListener {

@@ -1,7 +1,5 @@
 package com.bignerdranch.geoquiz
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -14,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
 private const val KEY_SCORE = "score"
 private const val KEY_ANSWERED_QUESTIONS = "answered_questions"
-private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
     //Answer buttons
@@ -33,6 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     private val quizViewModel: QuizViewModel by lazy {
         ViewModelProvider(this).get(QuizViewModel::class.java)
+    }
+
+    private val cheatActivityContract = registerForActivityResult(CheatActivity.Contract()) {
+        quizViewModel.isCheater = it
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         cheatButton.setOnClickListener {
             //Start CheatActivity
-            val answerIsTrue = quizViewModel.currentQuestionAnswer
-            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
-            startActivityForResult(intent, REQUEST_CODE_CHEAT)
+            cheatActivityContract.launch(quizViewModel.currentQuestionAnswer)
         }
 
         questionTextView.setOnClickListener {
@@ -88,17 +87,6 @@ class MainActivity : AppCompatActivity() {
         toggleNavigationButtons()
         toggleAnswerButtons()
         updateQuestion()
-    }
-
-    //Get if the user cheated
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK)
-            return
-
-        if (requestCode == REQUEST_CODE_CHEAT) {
-            quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
-        }
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -122,8 +110,7 @@ class MainActivity : AppCompatActivity() {
             val toastMessage =
                 "${getString(R.string.score_toast)}${quizViewModel.score}/${quizViewModel.numberOfQuestions}"
 
-            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
         }
     }
 

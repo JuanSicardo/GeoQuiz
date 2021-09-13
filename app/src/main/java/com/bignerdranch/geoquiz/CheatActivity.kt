@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContract
 
 private const val EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true"
 const val EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown"
@@ -45,11 +46,19 @@ class CheatActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK, data)
     }
 
-    companion object {
-        fun newIntent(packageContext: Context, answerIsTrue: Boolean): Intent {
-            return Intent(packageContext, CheatActivity::class.java).apply {
-                putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue)
+    class Contract : ActivityResultContract<Boolean, Boolean>() {
+        override fun createIntent(context: Context, isAnswerTrue: Boolean?): Intent {
+            return Intent(context, CheatActivity::class.java).apply {
+                putExtra(EXTRA_ANSWER_IS_TRUE, isAnswerTrue)
             }
         }
+
+        override fun parseResult(resultCode: Int, result: Intent?): Boolean {
+            if(resultCode != Activity.RESULT_OK)
+                return false
+
+            return result?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
+
     }
 }

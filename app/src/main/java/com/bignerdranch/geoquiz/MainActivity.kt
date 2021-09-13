@@ -1,5 +1,6 @@
 package com.bignerdranch.geoquiz
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -7,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 
 private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
@@ -33,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this).get(QuizViewModel::class.java)
     }
 
-    private val cheatActivityContract = registerForActivityResult(CheatActivity.Contract()) {
-        if (it) quizViewModel.cheatCurrentQuestion()
+    private val cheatActivityContract = registerForActivityResult(CheatActivity.Contract()) { result ->
+        if (result) quizViewModel.cheatCurrentQuestion()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +81,9 @@ class MainActivity : AppCompatActivity() {
             changeQuestion(false)
         }
 
-        cheatButton.setOnClickListener {
+        cheatButton.setOnClickListener { view ->
             //Start CheatActivity
+            val options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.width, view.height)
             cheatActivityContract.launch(quizViewModel.currentQuestionAnswer)
         }
 

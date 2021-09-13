@@ -71,5 +71,17 @@ class QuizViewModel : ViewModel() {
     }
 
     //Cheat detection
-    var isCheater = false
+    private val cheatedQuestions: MutableSet<Int> = mutableSetOf()
+
+    val cheatedQuestionsList
+        get() = cheatedQuestions.toTypedArray().toCollection(ArrayList())
+
+    //Marked questions as cheated by the user
+    fun cheatCurrentQuestion() {
+        cheatedQuestions.add(currentQuestionIndex)
+    }
+
+    fun isCurrentQuestionCheated(): Boolean {
+        return cheatedQuestions.contains(currentQuestionIndex)
+    }
 }

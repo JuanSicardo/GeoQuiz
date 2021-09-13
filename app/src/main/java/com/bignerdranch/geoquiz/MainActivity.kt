@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val cheatActivityContract = registerForActivityResult(CheatActivity.Contract()) {
-        quizViewModel.isCheater = it
+        if (it) quizViewModel.cheatCurrentQuestion()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = when {
-            quizViewModel.isCheater -> R.string.judgment_toast
+            quizViewModel.isCurrentQuestionCheated() -> R.string.judgment_toast
             userAnswer == correctAnswer -> {
                 quizViewModel.incrementScore()
                 R.string.correct_toast

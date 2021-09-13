@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
 private const val KEY_SCORE = "score"
 private const val KEY_ANSWERED_QUESTIONS = "answered_questions"
+private const val KEY_CHEATED_QUESTIONS = "cheated_questions"
 
 class MainActivity : AppCompatActivity() {
     //Answer buttons
@@ -47,6 +48,10 @@ class MainActivity : AppCompatActivity() {
             savedInstanceState?.getIntegerArrayList(KEY_ANSWERED_QUESTIONS) ?: ArrayList<Int>()
         for (index in listOfAnsweredQuestions)
             quizViewModel.answerQuestion(index)
+        val listOfCheatedQuestions =
+            savedInstanceState?.getIntegerArrayList(KEY_CHEATED_QUESTIONS) ?: ArrayList<Int>()
+        for (index in listOfCheatedQuestions)
+            quizViewModel.cheatQuestion(index)
 
         //Get UI elements
         trueButton = findViewById(R.id.true_button)
@@ -160,5 +165,6 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(KEY_CURRENT_QUESTION_INDEX, quizViewModel.currentQuestionIndex)
         outState.putInt(KEY_SCORE, quizViewModel.score)
         outState.putIntegerArrayList(KEY_ANSWERED_QUESTIONS, quizViewModel.answeredQuestionsList)
+        outState.putIntegerArrayList(KEY_CHEATED_QUESTIONS, quizViewModel.cheatedQuestionsList)
     }
 }

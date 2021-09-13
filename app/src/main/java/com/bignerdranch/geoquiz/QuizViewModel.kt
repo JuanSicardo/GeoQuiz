@@ -81,6 +81,10 @@ class QuizViewModel : ViewModel() {
         cheatedQuestions.add(currentQuestionIndex)
     }
 
+    fun cheatQuestion(index: Int) {
+        cheatedQuestions.add(index)
+    }
+
     fun isCurrentQuestionCheated(): Boolean {
         return cheatedQuestions.contains(currentQuestionIndex)
     }

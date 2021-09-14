@@ -76,6 +76,9 @@ class QuizViewModel : ViewModel() {
     val cheatedQuestionsList
         get() = cheatedQuestions.toTypedArray().toCollection(ArrayList())
 
+    val numberOfCheatedQuestions
+        get() = cheatedQuestions.size
+
     //Marked questions as cheated by the user
     fun cheatCurrentQuestion() {
         cheatedQuestions.add(currentQuestionIndex)

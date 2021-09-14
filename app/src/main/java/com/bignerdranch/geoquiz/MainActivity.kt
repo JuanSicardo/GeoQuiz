@@ -10,11 +10,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
+import kotlin.math.min
 
 private const val KEY_CURRENT_QUESTION_INDEX = "current_question_index"
 private const val KEY_SCORE = "score"
 private const val KEY_ANSWERED_QUESTIONS = "answered_questions"
 private const val KEY_CHEATED_QUESTIONS = "cheated_questions"
+private const val CHEATS_ALLOWED = 3
 
 class MainActivity : AppCompatActivity() {
     //Answer buttons
@@ -25,8 +27,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: ImageButton
     private lateinit var prevButton: ImageButton
 
-    //Cheat button
+    //Cheats
     private lateinit var cheatButton: Button
+    private lateinit var cheatsLeftTextView: TextView
 
     //Question display
     private lateinit var questionTextView: TextView
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     private val cheatActivityContract = registerForActivityResult(CheatActivity.Contract()) { result ->
         if (result) quizViewModel.cheatCurrentQuestion()
+        updateCheatsCount()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         cheatButton = findViewById(R.id.cheat_button)
         questionTextView = findViewById(R.id.question_text_view)
         apiLevelTextView = findViewById(R.id.api_level_text_view)
+        cheatsLeftTextView = findViewById(R.id.cheats_left_text_view)
 
         val apiLevelText = getString(R.string.api_level_text, Build.VERSION.SDK_INT)
         apiLevelTextView.text = apiLevelText
@@ -102,6 +107,7 @@ class MainActivity : AppCompatActivity() {
         toggleNavigationButtons()
         toggleAnswerButtons()
         updateQuestion()
+        updateCheatsCount()
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -162,6 +168,16 @@ class MainActivity : AppCompatActivity() {
             prevButton.visibility = View.INVISIBLE
             prevButton.isEnabled
         }
+    }
+
+    private fun updateCheatsCount() {
+        //min calculated to prevent errors
+        val cheatsLeft = CHEATS_ALLOWED - min(CHEATS_ALLOWED, quizViewModel.numberOfCheatedQuestions)
+        val cheatsLeftText = getString(R.string.cheats_left_text, cheatsLeft)
+
+        cheatsLeftTextView.text = cheatsLeftText
+
+        cheatButton.isEnabled = cheatsLeft > 0
     }
 
     //Enable/disable answer buttons

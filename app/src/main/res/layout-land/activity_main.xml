@@ -5,51 +5,72 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/question_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"
-        tools:text="@string/question_australia" />
-
-    <TextView
         android:id="@+id/api_level_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_gravity="top|end"
+        android:layout_margin="16dp"
         tools:text="API Level 31" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center_horizontal|center_vertical">
+
+        <TextView
+            android:id="@+id/question_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            tools:text="@string/question_australia" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/true_button"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/true_button"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/false_button"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/false_button"
+                tools:ignore="ButtonStyle" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginBottom="100dp">
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/cheats_left_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            tools:text="3 cheats left" />
 
         <Button
-            android:id="@+id/true_button"
+            android:id="@+id/cheat_button"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:text="@string/true_button"
-            tools:ignore="ButtonStyle" />
-
-        <Button
-            android:id="@+id/false_button"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/false_button"
-            tools:ignore="ButtonStyle" />
+            android:layout_marginBottom="16dp"
+            android:text="@string/cheat_button" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/cheat_button"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:text="@string/cheat_button"/>
 
     <ImageButton
         android:id="@+id/prev_button"

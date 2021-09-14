@@ -47,7 +47,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="50dp">
 
         <ImageButton
             android:id="@+id/prev_button"
@@ -65,5 +66,11 @@
             android:src="@drawable/arrow_right" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/api_level_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="API Level 31"/>
 
 </LinearLayout>

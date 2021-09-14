@@ -13,6 +13,7 @@
 
     <!--    TextViews-->
     <string name="warning_text">Are you sure you want to do this?</string>
+    <string name="api_level_text">API Level %1$d</string>
 
     <!--    Toasts-->
     <string name="correct_toast">Correct!</string>

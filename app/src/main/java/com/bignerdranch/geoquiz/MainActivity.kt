@@ -1,5 +1,6 @@
 package com.bignerdranch.geoquiz
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
 
     //Question display
     private lateinit var questionTextView: TextView
+
+    //API level display
+    private lateinit var apiLevelTextView: TextView
 
     private val quizViewModel: QuizViewModel by lazy {
         ViewModelProvider(this).get(QuizViewModel::class.java)
@@ -61,6 +65,10 @@ class MainActivity : AppCompatActivity() {
         prevButton = findViewById(R.id.prev_button)
         cheatButton = findViewById(R.id.cheat_button)
         questionTextView = findViewById(R.id.question_text_view)
+        apiLevelTextView = findViewById(R.id.api_level_text_view)
+
+        val apiLevelText = getString(R.string.api_level_text, Build.VERSION.SDK_INT)
+        apiLevelTextView.text = apiLevelText
 
         trueButton.setOnClickListener {
             checkAnswer(true)

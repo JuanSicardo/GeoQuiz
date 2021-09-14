@@ -12,6 +12,14 @@
         android:layout_marginBottom="24dp"
         tools:text="@string/question_australia" />
 
+    <TextView
+        android:id="@+id/api_level_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="top|end"
+        tools:text="API Level 31" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +47,7 @@
         android:id="@+id/cheat_button"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_gravity="bottom|center_horizontal"
         android:text="@string/cheat_button"/>
 
@@ -47,7 +56,7 @@
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_gravity="bottom|start"
-        android:layout_marginEnd="24dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/prev_button"
         android:src="@drawable/arrow_left" />
 
@@ -56,6 +65,7 @@
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
         android:contentDescription="@string/next_button"
         android:src="@drawable/arrow_right" />
 
